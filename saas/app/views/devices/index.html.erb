@@ -1,16 +1,30 @@
-<h1>Registered Devices</h1>
+<% @page_title = "Registered devices" %>
 
-<% if @devices.any? %>
-  <ul>
-    <% @devices.each do |device| %>
-      <li>
-        <strong><%= device.name || "Unnamed device" %></strong>
-        (<%= device.platform == "apple" ? "iOS" : "Android" %>)
-        <span>Added <%= time_ago_in_words(device.created_at) %> ago</span>
-        <%= button_to "Remove", saas.device_path(device), method: :delete, data: { confirm: "Remove this device?" } %>
-      </li>
-    <% end %>
-  </ul>
-<% else %>
-  <p>No devices registered. Install the mobile app to receive push notifications.</p>
-<% end %>
+<section class="panel panel--centered flex flex-column gap">
+  <% if @devices.any? %>
+    <h1 class="txt-x-large font-weight-black txt-tight-lines margin-none">
+      Registered devices
+    </h1>
+    <ul class="flex flex-column gap list-style-none full-width pad border-radius border" style="--inline-space: var(--block-space); --row-gap: var(--block-space);">
+      <% @devices.each do |device| %>
+        <li class="flex align-center gap txt-medium txt-align-start">
+          <div class="flex-1 flex flex-column">
+            <span>
+              <strong><%= device.name || "Unnamed device" %></strong>
+              (<%= device.platform == "apple" ? "iOS" : "Android" %>)
+            </span>
+            <%= tag.time "Added #{time_ago_in_words(device.created_at)} ago", datetime: device.created_at.to_i, class: "txt-subtle txt-x-small" %>
+          </div>
+          <%= button_to "Remove", saas.device_path(device), method: :delete, class: "btn txt-small", data: { confirm: "Remove this device?" }, form: { class: "flex-item-no-shrink" } %>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <h1 class="txt-x-large font-weight-black margin-none">No devices registered</h1>
+    <p class="margin-none-block-start">Install the mobile app to receive push notifications.</p>
+  <% end %>
+
+  <%= link_to session_menu_path, class: "btn center txt-small margin-block-start hide-on-native", data: { turbo_prefetch: false } do %>
+    <span>Your Fizzy accounts</span>
+  <% end %>
+</section>
